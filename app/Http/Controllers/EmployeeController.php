@@ -12,37 +12,42 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        return Employee::all();
+        return response()->json(Employee::all());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
+            'email' => 'required|email|unique:employees,email',
+            'position' => 'required|string',
+        ]);
+
+        $employee = Employee::create($request->all());
+        return response()->json($employee, 201);
     }
 
     /**
      * Display the specified resource.
      */
     public function search(Request $request)
-    {
-        $search = $request->query('search');
+{
+    
+    $search = $request->query('search');
 
     if ($search) {
-        $employee = Employee::find($search);
+        $employees = Employee::where('first_name', 'like', "%{$search}%")
+            ->orWhere('last_name', 'like', "%{$search}%")
+            ->orWhere('email', 'like', "%{$search}%")
+            ->get();
 
-        if ($employee) {
-            return response()->json($employee);
+        if ($employees->isNotEmpty()) {
+            return response()->json($employees);
         } else {
             return response()->json(['message' => 'Employee not found'], 404);
         }
@@ -50,29 +55,43 @@ class EmployeeController extends Controller
 
     $employees = Employee::all();
     return response()->json($employees);
-    }
+}
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Employee $employee)
-    {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     */
+    
     public function update(Request $request, Employee $employee)
     {
-        //
-    }
+        $employee = Employee::find($employee->id);
+        if(is_null($employee)){
+            return response()->json(['message' => 'Employee not found'], 404);
+        }
 
+        $request->validate([
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
+            'email' => 'required|email|unique:employees,email',
+            'position' => 'required|string',
+        ]);
+
+        $employee->update($request->all());
+        return response()->json([
+            'message' => 'Employee updated successfully',
+            'employee' => $employee,
+        ]);
+        
+    }
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Employee $employee)
     {
-        //
+        $employee = Employee::find($id);
+        if(is_null($employee)){
+            return response()->json(['message' => 'Employee not found'], 404);
+        }
+        $employee->delete();
+        return response()->json([
+            'message' => 'Employee deleted successfully'
+        ]);
     }
 }
