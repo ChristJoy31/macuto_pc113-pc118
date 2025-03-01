@@ -10,6 +10,10 @@ class EmployeeController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function employeeD()
+    {
+        return view('employee.dashboard');
+    }
     public function index()
     {
         return response()->json(Employee::all());
@@ -25,6 +29,7 @@ class EmployeeController extends Controller
             'first_name' => 'required|string',
             'last_name' => 'required|string',
             'email' => 'required|email|unique:employees,email',
+            'password' => 'required|string',
             'position' => 'required|string',
         ]);
 
@@ -70,6 +75,7 @@ class EmployeeController extends Controller
             'first_name' => 'required|string',
             'last_name' => 'required|string',
             'email' => 'required|email|unique:employees,email',
+            'password' => 'required|string',
             'position' => 'required|string',
         ]);
 

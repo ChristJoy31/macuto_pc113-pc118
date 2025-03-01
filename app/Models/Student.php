@@ -11,6 +11,7 @@ class student extends Model
         'firstname',
         'lastname',
         'email',
+        'password',
         'course'
     ];
 }

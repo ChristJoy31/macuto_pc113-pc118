@@ -10,6 +10,11 @@ class StudentController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function studentD()
+    {
+        return view('student.dashboard');
+    }
+
     public function index()
     {
         return response()->json(Student::all());
@@ -23,6 +28,7 @@ class StudentController extends Controller
             'first_name' => 'required|string',
             'last_name' => 'required|string',
             'email' => 'required|email|unique:student,email',
+            'password' => 'required|string',
             'course' => 'required|string',
         ]);
 
@@ -76,6 +82,7 @@ class StudentController extends Controller
             'first_name' => 'required|string',
             'last_name' => 'required|string',
             'email' => 'required|email|unique:student,email',
+            'password' => 'required|string',
             'course' => 'required|string',
         ]);
 
