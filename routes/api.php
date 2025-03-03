@@ -4,14 +4,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\StudentController;
-use App\Http\Controllers\AuthController;
-
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\UserDashboardController;
 
 
-Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/employees', [EmployeeController::class, 'index']);
 Route::get('/employees/{$id}', [EmployeeController::class, 'search']);
@@ -19,8 +16,21 @@ Route::post('/employees', [EmployeeController::class, 'store']);
 Route::post('/employees/{$id}', [EmployeeController::class, 'update']);
 Route::delete('/employees/{$id}', [EmployeeController::class, 'destroy']);
 
+Route::post('/login', [UserController::class, 'login']);
+
+
+
 Route::get('/students', [StudentController::class, 'index']);
 Route::get('/students/{$id}', [StudentController::class, 'search']);
 Route::post('/students', [StudentController::class, 'store']);
 Route::post('/students/{$id}', [StudentController::class, 'update']);
 Route::delete('/students/{$id}', [StudentController::class, 'destroy']);
+
+
+Route::middleware(['auth:sanctum', 'role:1'])->group(function() {
+    Route::get('/users', [UserController::class, 'index']);
+});
+
+Route::middleware(['auth:sanctum', 'role:2'])->group(function() {
+    Route::get('/user-dashboard', [UserDashboardController::class, 'index']); 
+});
