@@ -9,28 +9,28 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function index()
+    public function admin()
     {
         return User::all();
     }
 
+    
     public function login(Request $request)
     {
-        if (Auth::attempt([
-            'email' => $request->email,
-            'password' => $request->password,
-        ])) {   
+        $credentials = $request->only('email', 'password');
+    
+        if (Auth::attempt($credentials)) {
             $user = Auth::user();
             $token = $user->createToken('Mytoken')->plainTextToken;
+            
             return response()->json([
-              'user' => $user,
-              'token' => $token,
-            ]);
-    }
-
+                'user' => $user,
+                'token' => $token,
+            ], 200);
+        }
+    
         return response()->json([
-            'message' => 'invalid credentials',
-        ]);
+            'message' => 'Invalid credentials',
+        ], 401); // Returns a proper HTTP 401 Unauthorized response
     }
- 
 }

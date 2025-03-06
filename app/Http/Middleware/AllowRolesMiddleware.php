@@ -21,7 +21,8 @@ class AllowRolesMiddleware
             return $next($request);
         }
         if (!in_array($user->role, $roles)) {
-            return response()->json(['message' => 'Access denied'], 403);
+            return response()->json([
+                'message' => 'Dili ka kasud diha! bawal!!!!!!'], 403);
         }
         return $next($request);
     }

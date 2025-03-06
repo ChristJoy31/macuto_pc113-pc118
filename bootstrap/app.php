@@ -3,7 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use App\Http\Middleware\AllowedRolesMiddleware;
+use App\Http\Middleware\AllowRolesMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -14,7 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'role' => AllowedRolesMiddleware::class,
+            'role' => AllowRolesMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
