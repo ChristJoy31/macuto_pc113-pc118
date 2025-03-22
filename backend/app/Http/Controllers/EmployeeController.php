@@ -11,7 +11,7 @@ class EmployeeController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function employeeD()
+    public function employee()
     {
         return view('employee.dashboard');
     }
