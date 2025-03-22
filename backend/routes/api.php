@@ -11,20 +11,20 @@ use App\Http\Controllers\UserDashboardController;
 
 
 Route::get('/employees', [EmployeeController::class, 'index']);
-Route::get('/employees/{$id}', [EmployeeController::class, 'search']);
+Route::get('/employees/{id}', [EmployeeController::class, 'search']);
 Route::post('/employees', [EmployeeController::class, 'store']);
-Route::post('/employees/{$id}', [EmployeeController::class, 'update']);
-Route::delete('/employees/{$id}', [EmployeeController::class, 'destroy']);
+Route::post('/employees/{id}', [EmployeeController::class, 'update']);
+Route::delete('/employees/{id}', [EmployeeController::class, 'destroy']);
 
 Route::post('/login', [UserController::class, 'login']);
 
 
 
 Route::get('/students', [StudentController::class, 'index']);
-Route::get('/students/{$id}', [StudentController::class, 'search']);
+Route::get('/students/{id}', [StudentController::class, 'search']);
 Route::post('/students', [StudentController::class, 'store']);
-Route::post('/students/{$id}', [StudentController::class, 'update']);
-Route::delete('/students/{$id}', [StudentController::class, 'destroy']);
+Route::post('/students/{id}', [StudentController::class, 'update']);
+Route::delete('/students/{id}', [StudentController::class, 'destroy']);
 
 
 Route::middleware(['auth:sanctum', 'role:1'])->group(function() {
