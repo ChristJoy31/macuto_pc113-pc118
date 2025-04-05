@@ -24,10 +24,10 @@ class StudentController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+         $request->validate([
             'first_name' => 'required|string',
             'last_name' => 'required|string',
-            'email' => 'required|email|unique:student,email',
+            'email' => 'required|email',
             'password' => 'required|string',
             'course' => 'required|string',
         ]);
@@ -41,24 +41,27 @@ class StudentController extends Controller
      */
     public function search(Request $request)
     {
-        $search = $request->query('search');
-    
-        if ($search) {
-            $students = Student::where('first_name', 'like', "%{$search}%")
-                ->orWhere('last_name', 'like', "%{$search}%")
-                ->orWhere('email', 'like', "%{$search}%")
-                ->get();
-    
-            if ($students->isNotEmpty()) {
-                return response()->json($students);
-            } else {
-                return response()->json(['message' => 'Student not found'], 404);
-            }
-        }
-    
-        $students = Student::all();
-        return response()->json($students);
+	$search = $request->query('search');s
+	
+	if($search){
+	    $student = Student::where('id', $search)
+        ->orWhere('first_name', 'like', "%{$search}%")
+	    ->orWhere('last_name', 'like', "%{$search}%")
+	    ->orWhere('email', 'like', "%{$search}%")
+	    ->get();
+
+	  if($student->isNotEmpty()){
+		return response()->json($student);
+	}else{
+		return response()->json([
+			'message' => 'Student Not Found'], 404);
+	}
+	}
+	
+	$student = Student::all();
+	return response()->json($student);
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -71,33 +74,37 @@ class StudentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Student $student)
+    public function update(Request $request, $id)
     {
-        $student = Student::find($student->id);
-        if(is_null($student)){
-            return response()->json(['message' => 'Student not found'], 404);
+        try {
+            // Find student by ID
+            $student = Student::findOrFail($id);
+    
+            // Validate request (ensure all fields are present)
+            $validated = $request->validate([
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'email' => 'required|email|unique:students,email,' . $id,
+                'course' => 'required|string|max:255',
+            ]);
+    
+            // Update student
+            $student->update($validated);
+    
+            return response()->json(['message' => 'Student updated successfully!', 'student' => $student], 200);
+    
+        } catch (\Exception $e) {
+            // Catch errors and log them
+            \Log::error('Error updating student: ' . $e->getMessage());
+            return response()->json(['error' => 'Something went wrong!', 'details' => $e->getMessage()], 500);
         }
-
-        $request->validate([
-            'first_name' => 'required|string',
-            'last_name' => 'required|string',
-            'email' => 'required|email|unique:student,email',
-            'password' => 'required|string',
-            'course' => 'required|string',
-        ]);
-
-        $student->update($request->all());
-        return response()->json([
-            'message' => 'Student updated successfully',
-            'student' => $student,
-        ]);
-        
     }
+    
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Student $student)
+    public function destroy($id)
     {
         $student = Student::find($id);
         if(is_null($student)){

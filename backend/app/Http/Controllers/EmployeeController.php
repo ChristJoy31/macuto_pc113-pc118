@@ -30,26 +30,26 @@ class EmployeeController extends Controller
             'first_name' => 'required|string',
             'last_name' => 'required|string',
             'email' => 'required|email|unique:employees,email',
-            'password' => 'required|string',
+            'password' => 'required|string|min:8', 
             'position' => 'required|string',
         ]);
+    
+        $employee = Employee::create($request->all());
 
-        $data = $request->all();
-        $data['password'] = Hash::make($request->password);
-
-        $employee = Employee::create($data);
-        return response()->json($employee, 201);
+        return response()->json([
+            'message' => 'Employee Created successfully',
+        ],200);
     }
-
-    /**
+        /**
      * Display the specified resource.
      */
     public function search(Request $request)
     {
-        $search = $request->query('search');
+        $search = $request->query('find');
 
         if ($search) {
-            $employees = Employee::where('first_name', 'like', "%{$search}%")
+            $employees = Employee::where('id', $search)
+                ->orWhere('first_name', 'like', "%{$search}%")
                 ->orWhere('last_name', 'like', "%{$search}%")
                 ->orWhere('email', 'like', "%{$search}%")
                 ->get();
@@ -68,33 +68,29 @@ class EmployeeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Employee $employee)
+    public function update(Request $request, $id)
     {
-        $employee = Employee::find($employee->id);
-        if (is_null($employee)) {
+        $employee = Employee::find($id);
+    
+        if (!$employee) {
             return response()->json(['message' => 'Employee not found'], 404);
         }
-
+    
         $request->validate([
             'first_name' => 'required|string',
             'last_name' => 'required|string',
-            'email' => 'required|email|unique:employees,email',
-            'password' => 'required|string',
+            'email' => 'required|email|unique:employees,email,' . $id,
             'position' => 'required|string',
         ]);
-
-        $data = $request->all();
-        if (isset($data['password'])) {
-            $data['password'] = Hash::make($data['password']);
-        }
-
-        $employee->update($data);
+    
+        $employee->update($request->all());
+    
         return response()->json([
             'message' => 'Employee updated successfully',
             'employee' => $employee,
         ]);
     }
-
+    
     /**
      * Remove the specified resource from storage.
      */
