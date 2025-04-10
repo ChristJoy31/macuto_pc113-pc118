@@ -1,13 +1,10 @@
 <?php
 require 'templates/header.php';
 require 'templates/sidebar.php';
-// require 'templates/nav.php';
+include 'templates/nav.php';
 ?>
 <!-- Main Content -->
-<div class="table-content p-4">
-<div class="table-content p-4">
-    <?php include 'templates/nav.php'; ?>
-    
+<div class="table-content p-4">    
     <div class="container-fluid mt-4">
         <!-- Title and Add Employee Button -->
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -15,7 +12,6 @@ require 'templates/sidebar.php';
                 <i class="bi bi-person-plus"></i> Add Employee
             </button>
         </div>
-
         <!-- User DataTable -->
         <div class="table-responsive">
             <table class="table table-hover table-bordered text-center shadow-sm" id="userTable">
@@ -149,7 +145,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 data: 'id',
                 render: function(data, type, row) {
                     return `
-                        <div class="d-flex gap-2">
+                        <div class="data-table">
                             <button class="btn btn-sm btn-warning" onclick="editEmployee(${row.id})">
                                 <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
                             </button>
@@ -219,6 +215,7 @@ function editEmployee(id) {
             "Authorization": "Bearer " + localStorage.getItem("token"),
         },
     })
+    
     .then(response => response.json())
     .then(data => {
         if (!data || data.length === 0 || data.message) {
@@ -290,9 +287,7 @@ function deleteEmployee(id) {
 
 
 </script>
-        </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
 

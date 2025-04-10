@@ -1,8 +1,7 @@
 <?php
-
 require 'templates/header.php';
 require 'templates/sidebar.php';
-
+include 'templates/nav.php';
 ?>
 <div class="hehe">
 <!-- Main Content -->

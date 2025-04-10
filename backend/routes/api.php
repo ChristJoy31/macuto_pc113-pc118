@@ -28,7 +28,12 @@ Route::delete('/students/{id}', [StudentController::class, 'destroy']);
 
 
 Route::middleware(['auth:sanctum', 'role:1'])->group(function() {
-    Route::get('/users-admin', [UserController::class, 'admin']);
+    // Route::get('/users-admin', [UserController::class, 'admin']);
+    Route::get('/users-admin', [UserController::class, 'show']);
+    Route::get('/users-admin/{id}', [UserController::class, 'search']);
+    Route::post('/users-admin', [UserController::class, 'store']);
+    Route::put('/users-admin/{id}', [UserController::class, 'update']);
+    Route::delete('/users-admin/{id}', [UserController::class, 'destroy']);
 });
 
 Route::middleware(['auth:sanctum', 'role:2'])->group(function() {

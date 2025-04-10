@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 <body>
     <div class="container mt-5">
@@ -23,33 +25,46 @@
     </div>
 
     <script>
-        document.getElementById("loginForm").addEventListener("submit", function(event) {
-            event.preventDefault();
+    document.getElementById("loginForm").addEventListener("submit", function(event) {
+        event.preventDefault();
 
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
 
-            fetch("http://backend.test/api/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email, password }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data); // Debugging: Log the API response
-                if (data.token) {
-                    localStorage.setItem("token", data.token);
-                    localStorage.setItem("role", data.user.role);
-                    window.location.href = "dashboard.php"; // Redirect to dashboard
-                } else {
-                    alert("Login failed. Please check your credentials.");
-                }
-            })
-            .catch(error => console.error("Error during login:", error));
+        fetch("http://backend.test/api/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, password }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => { throw err; });
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Save token and role
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("role", data.user.role);
+
+            // Redirect to dashboard immediately (no SweetAlert)
+            window.location.href = "dashboard.php";
+        })
+        .catch(error => {
+            console.error("Login error:", error);
+            Swal.fire({
+                title: "Login Failed",
+                text: error?.message || "Please check your email and password.",
+                icon: "error",
+                confirmButtonText: "Try Again"
+            });
         });
-    </script>
+    });
+</script>
+
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

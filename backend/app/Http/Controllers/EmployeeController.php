@@ -25,21 +25,34 @@ class EmployeeController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        $request->validate([
-            'first_name' => 'required|string',
-            'last_name' => 'required|string',
-            'email' => 'required|email|unique:employees,email',
-            'password' => 'required|string|min:8', 
-            'position' => 'required|string',
-        ]);
-    
-        $employee = Employee::create($request->all());
+{
+    $request->validate([
+        'first_name' => 'required|string',
+        'last_name' => 'required|string',
+        'email' => 'required|email|unique:employees,email',
+        'password' => 'required|string|min:8', 
+        'position' => 'required|string',
+        'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+    ]);
 
-        return response()->json([
-            'message' => 'Employee Created successfully',
-        ],200);
+    if ($request->hasFile('photo')) {
+        $photoPath = $request->file('photo')->store('employee_photos', 'public');
+    } else {
+        $photoPath = null;
     }
+
+    $employee = Employee::create([
+        'first_name' => $request->first_name,
+        'last_name' => $request->last_name,
+        'email' => $request->email,
+        'password' => bcrypt($request->password),
+        'position' => $request->position,
+        'photo' => $photoPath,
+    ]);
+
+    return response()->json(['message' => 'Employee Created successfully'], 200);
+}
+
         /**
      * Display the specified resource.
      */

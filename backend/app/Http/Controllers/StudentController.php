@@ -41,7 +41,7 @@ class StudentController extends Controller
      */
     public function search(Request $request)
     {
-	$search = $request->query('search');s
+	$search = $request->query('search');
 	
 	if($search){
 	    $student = Student::where('id', $search)
