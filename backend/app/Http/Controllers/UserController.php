@@ -79,7 +79,7 @@ class UserController extends Controller
         'first_name' => 'required|string',
         'last_name' => 'required|string',
         'email' => 'required|email|unique:users,email,' . $id,
-        'position' => 'required|string',
+        'role' => 'required|string',
     ]);
 
     $user->update($request->all());
@@ -130,7 +130,7 @@ class UserController extends Controller
                 // Create token for the user
                 try {
                     $token = $user->createToken('Mytoken')->plainTextToken;
-                } catch (\Exception $e) {
+                } catch (\Exception $e) {  
                     Log::error("Error creating token: " . $e->getMessage());
                     return response()->json([
                         'message' => 'Failed to generate authentication token.'

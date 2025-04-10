@@ -2,17 +2,17 @@
 
 require 'templates/header.php';
 require 'templates/sidebar.php';
+include 'templates/nav.php';
  ?>
 
-<div class="col-md-9 col-lg-10 p-4 offset-md-3 offset-lg-2">
-    <h1>Welcome to the Dashboard</h1>
- </div>       
-
-
-
+<div class="table-content p-4">   
+    <div class="container-fluid mt-4">
+        <h1>Hello Shit</h1>
+    </div>
+</div>
  <?php
 
-// require 'templates/footer.php';
+require 'templates/footer.php';
 ?>
 
 

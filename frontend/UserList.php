@@ -210,7 +210,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 // Edit Employee Function
-function editEmployee(id) {
+function editUser(id) {
     fetch(`http://backend.test/api/users-admin/search?find=${id}`, {
         method: "GET",
         headers: {
@@ -238,22 +238,22 @@ function editEmployee(id) {
         editModal.show();
     })  
     .catch(error => {
-        console.error("Error fetching employee details:", error);
+        console.error("Error fetching user details:", error);
         alert("Error loading user: " + error.message);
     });
 }
 
 // Save Changes
 document.getElementById("saveChangesBtn").addEventListener("click", function() {
-    const employeeId = document.getElementById("editEmployeeId").value;
+    const userId = document.getElementById("editUserId").value;
     const updatedData = {
         first_name: document.getElementById("editFirstName").value,
         last_name: document.getElementById("editLastName").value,
         email: document.getElementById("editEmail").value,
-        position: document.getElementById("editPosition").value,
+        role: document.getElementById("editRole").value,
     };
 
-    fetch(`http://backend.test/api/employees/${employeeId}`, {
+    fetch(`http://backend.test/api/users-admin/${userId}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
@@ -263,10 +263,10 @@ document.getElementById("saveChangesBtn").addEventListener("click", function() {
     })
     .then(response => response.json())
     .then(data => {
-        alert("Employee updated successfully!");
+        alert("User updated successfully!");
         window.location.reload();
     })
-    .catch(error => console.error("Error updating employee:", error));
+    .catch(error => console.error("Error updating user:", error));
 });
 
 // Delete Employee Function

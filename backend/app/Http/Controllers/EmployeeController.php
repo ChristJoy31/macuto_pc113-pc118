@@ -86,7 +86,7 @@ class EmployeeController extends Controller
         $employee = Employee::find($id);
     
         if (!$employee) {
-            return response()->json(['message' => 'Employee not found'], 404);
+            return response()->json(['message' => 'User not found'], 404);
         }
     
         $request->validate([
