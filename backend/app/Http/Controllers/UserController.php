@@ -39,7 +39,10 @@ class UserController extends Controller
         'photo' => $photoPath,
     ]);
 
-    return response()->json(['message' => 'User Created successfully'], 200);
+    return response()->json([
+        'message' => 'User Created successfully',
+        'success' => true,
+    ], 200);
 }
 
     public function search(Request $request)
@@ -86,8 +89,9 @@ class UserController extends Controller
 
     return response()->json([
         'message' => 'User updated successfully',
-        'user' => $user,
-    ]);
+        // 'user' => $user,
+        'success' => true,
+    ],200);
 }
 
 /**
@@ -101,8 +105,9 @@ class UserController extends Controller
     }
     $user->delete();
     return response()->json([
-        'message' => 'User deleted successfully'
-    ]);
+        'message' => 'User deleted successfully',
+        'success' => true,
+    ], 200);
 }
 
 

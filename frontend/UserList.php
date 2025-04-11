@@ -26,7 +26,9 @@ include 'templates/nav.php';
                         <th>Action</th>
                     </tr>
                 </thead>
-                <tbody class="align-middle"></tbody>
+                <tbody id="userTableBody">
+    <!-- New user rows will be added here via JavaScript -->
+                </tbody>
             </table>
         </div>
     </div>
@@ -109,7 +111,33 @@ include 'templates/nav.php';
     </div>
 </div>
 
+
 <script>
+     const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+    });
+
+    // Fetch user data function
+function fetchUsers() {
+    const token = localStorage.getItem("token"); // Token is needed for the request
+    fetch("http://backend.test/api/users-admin", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token,
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        table.clear();
+        table.rows.add(data).draw();  // Assuming `table` is your DataTable instance
+    })
+    .catch(error => console.error("Error fetching users:", error));
+}
 document.addEventListener("DOMContentLoaded", function() {
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("role");
@@ -133,8 +161,10 @@ document.addEventListener("DOMContentLoaded", function() {
         window.location.href = "index.php";
     });
 
+   
+
     // Initialize DataTable
-    const table = $('#userTable').DataTable({
+     table = $('#userTable').DataTable({
         columns: [
             { data: 'id' }, 
             { data: 'first_name' }, 
@@ -147,10 +177,10 @@ document.addEventListener("DOMContentLoaded", function() {
                     return `
                         <div class="data-table">
                             <button class="btn btn-sm btn-warning" onclick="editUser(${row.id})">
-                                <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
                             </button>
                             <button class="btn btn-sm btn-danger" onclick="deleteUser(${row.id})">
-                                <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
                             </button>
                         </div>
                     `;
@@ -160,19 +190,23 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     // Fetch user data
-    fetch("http://backend.test/api/users-admin", {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + token,
-        },
-    })
-    .then(response => response.json())
-    .then(data => {
-        table.clear();
-        table.rows.add(data).draw();
-    })
-    .catch(error => console.error("Error fetching users:", error));
+    function fetchUsers() {
+        fetch("http://backend.test/api/users-admin", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token,
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            table.clear();
+            table.rows.add(data).draw();
+        })
+        .catch(error => console.error("Error fetching users:", error));
+    }
+
+    fetchUsers();
 
     // Open Add User Modal
     document.getElementById("addUserBtn").addEventListener("click", function() {
@@ -182,32 +216,68 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Add User Function
     document.getElementById("addUserBtnModal").addEventListener("click", function() {
-        const newUserData = {
-            first_name: document.getElementById("addFirstName").value,
-            last_name: document.getElementById("addLastName").value,
-            email: document.getElementById("addEmail").value,
-            password: document.getElementById("addPassword").value,
-            position: document.getElementById("addRole").value,
-        };
+    const newUserData = {
+        first_name: document.getElementById("addFirstName").value,
+        last_name: document.getElementById("addLastName").value,
+        email: document.getElementById("addEmail").value,
+        password: document.getElementById("addPassword").value,
+        role: document.getElementById("addRole").value,
+    };
 
-        fetch("http://backend.test/api/users-admin", {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "Authorization": "Bearer " + localStorage.getItem("token"),
-    },
-    body: JSON.stringify(newUserData),
-})
-.then(response => response.json())
-.then(data => {
-    alert("User added successfully!");
-    window.location.reload();
-})
-.catch(error => console.error("Error adding user:", error));
+    fetch("http://backend.test/api/users-admin", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": "Bearer " + localStorage.getItem("token"),
+        },
+        body: JSON.stringify(newUserData),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // SweetAlert success notification
+            Toast.fire({
+                icon: 'success',
+                title: 'User added successfully!'
+            });
 
+            // Close the modal
+            const addModal = bootstrap.Modal.getInstance(document.getElementById('addUserModal'));
+            addModal.hide(); // Close the modal
+
+            // Clear the form inputs
+            document.getElementById("addFirstName").value = "";
+            document.getElementById("addLastName").value = "";
+            document.getElementById("addEmail").value = "";
+            document.getElementById("addPassword").value = "";
+            document.getElementById("addRole").value = "";
+
+            // Refresh the table data
+            fetchUsers(); // Call fetchUsers to update the table
+
+        } else {
+            // Handle errors if the creation fails
+            Toast.fire({
+                icon: 'error',
+                title: data.message || 'Failed to add user'
+            });
+            console.error("Validation error:", data);
+        }
+    })
+    .catch(error => {
+        // Handle any network or other errors
+        Toast.fire({
+            icon: 'error',
+            title: 'Something went wrong!'
+        });
+        console.error("Error adding user:", error);
     });
 });
+
+});
+
+
 
 // Edit Employee Function
 function editUser(id) {
@@ -263,15 +333,59 @@ document.getElementById("saveChangesBtn").addEventListener("click", function() {
     })
     .then(response => response.json())
     .then(data => {
-        alert("User updated successfully!");
-        window.location.reload();
+        if (data.success) {
+            // SweetAlert success notification
+            Toast.fire({
+                icon: 'success',
+                title: data.message || 'User updated successfully!'
+            });
+
+            // Close the modal
+            const editModal = bootstrap.Modal.getInstance(document.getElementById('editUserModal'));
+            editModal.hide(); // Close the modal
+
+            // Clear the form inputs
+            document.getElementById("editFirstName").value = "";
+            document.getElementById("editLastName").value = "";
+            document.getElementById("editEmail").value = "";
+            document.getElementById("editRole").value = "";
+
+            // Refresh the table data by fetching the latest users
+            fetchUsers(); // This will refresh the entire table
+        } else {
+            // Handle errors if the update fails
+            Toast.fire({
+                icon: 'error',
+                title: data.message || 'Failed to edit user'
+            });
+            console.error("Validation error:", data);
+        }
     })
-    .catch(error => console.error("Error updating user:", error));
+    .catch(error => {
+        // Handle any network or other errors
+        Toast.fire({
+            icon: 'error',
+            title: 'Something went wrong!'
+        });
+        console.error("Error editing user:", error);
+    });
 });
 
+
+
 // Delete Employee Function
+
 function deleteUser(id) {
-    if (confirm(`Are you sure you want to delete user with ID: ${id}?`)) {
+    Swal.fire({
+    title: 'Are you sure?',
+    text: `You are about to delete user with ID: ${id}`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Yes, delete it!'
+}).then((result) => {
+    if (result.isConfirmed) {
         fetch(`http://backend.test/api/users-admin/${id}`, {
             method: "DELETE",
             headers: {
@@ -281,11 +395,21 @@ function deleteUser(id) {
         })
         .then(response => response.json())
         .then(data => {
-            alert("User deleted successfully!");
-            window.location.reload();
+            Toast.fire({
+                icon: 'success',
+                title: 'User deleted successfully!'
+            });
+            fetchUsers(); // Refresh user list
         })
-        .catch(error => console.error("Error deleting user:", error));
+        .catch(error => {
+            Toast.fire({
+                icon: 'error',
+                title: 'Error deleting user!'
+            });
+            console.error("Error deleting user:", error);
+        });
     }
+});
 }
 
 
