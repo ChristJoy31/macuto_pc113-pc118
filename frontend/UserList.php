@@ -23,6 +23,7 @@ include 'templates/nav.php';
                         <th>Lastname</th>
                         <th>Email</th>
                         <th>Role</th>
+                        <th>Photo</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -63,6 +64,10 @@ include 'templates/nav.php';
                     <div class="mb-3">
                         <label for="addRole" class="form-label">Role</label>
                         <input type="text" class="form-control" id="addRole" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="addPhoto" class="form-label">Photo</label>
+                        <input type="file" class="form-control" id="addPhoto" accept="image/*">
                     </div>
                 </form>
             </div>
@@ -171,6 +176,11 @@ document.addEventListener("DOMContentLoaded", function() {
             { data: 'last_name' }, 
             { data: 'email' }, 
             { data: 'role' }, 
+            { data: 'photo',
+            render: function(data) {
+                if (!data) return 'No Photo';
+                return `<img src="http://backend.test/storage/${data}" alt="Employee Photo" width="50" height="50" class="rounded-circle"/>`;
+            }},
             {
                 data: 'id',
                 render: function(data, type, row) {
@@ -215,23 +225,22 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     // Add User Function
-    document.getElementById("addUserBtnModal").addEventListener("click", function() {
-    const newUserData = {
-        first_name: document.getElementById("addFirstName").value,
-        last_name: document.getElementById("addLastName").value,
-        email: document.getElementById("addEmail").value,
-        password: document.getElementById("addPassword").value,
-        role: document.getElementById("addRole").value,
-    };
+    document.getElementById("addUserBtnModal").addEventListener("click", function () {
+    const formData = new FormData();
+    formData.append("first_name", document.getElementById("addFirstName").value);
+    formData.append("last_name", document.getElementById("addLastName").value);
+    formData.append("email", document.getElementById("addEmail").value);
+    formData.append("password", document.getElementById("addPassword").value);
+    formData.append("role", document.getElementById("addRole").value);
+    formData.append("photo", document.getElementById("addPhoto").files[0]);
 
     fetch("http://backend.test/api/users-admin", {
         method: "POST",
         headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
             "Authorization": "Bearer " + localStorage.getItem("token"),
+            "Accept": "application/json",
         },
-        body: JSON.stringify(newUserData),
+        body: formData,
     })
     .then(response => response.json())
     .then(data => {

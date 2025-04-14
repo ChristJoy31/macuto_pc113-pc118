@@ -29,6 +29,7 @@ class UserController extends Controller
     } else {
         $photoPath = null;
     }
+    
 
     $user = User::create([
         'first_name' => $request->first_name,
