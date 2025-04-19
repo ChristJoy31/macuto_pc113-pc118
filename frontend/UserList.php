@@ -19,11 +19,11 @@ include 'templates/nav.php';
                 <thead class="table-primary text-light">
                     <tr>
                         <th>ID</th>
+                        <th>Photo</th>
                         <th>Firstname</th>
                         <th>Lastname</th>
                         <th>Email</th>
                         <th>Role</th>
-                        <th>Photo</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -171,16 +171,16 @@ document.addEventListener("DOMContentLoaded", function() {
     // Initialize DataTable
      table = $('#userTable').DataTable({
         columns: [
-            { data: 'id' }, 
-            { data: 'first_name' }, 
-            { data: 'last_name' }, 
-            { data: 'email' }, 
-            { data: 'role' }, 
+            { data: 'id' },
             { data: 'photo',
             render: function(data) {
                 if (!data) return 'No Photo';
                 return `<img src="http://backend.test/storage/${data}" alt="Employee Photo" width="50" height="50" class="rounded-circle"/>`;
-            }},
+            }}, 
+            { data: 'first_name' }, 
+            { data: 'last_name' }, 
+            { data: 'email' }, 
+            { data: 'role' }, 
             {
                 data: 'id',
                 render: function(data, type, row) {
