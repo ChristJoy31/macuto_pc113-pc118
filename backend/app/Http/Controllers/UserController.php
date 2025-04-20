@@ -9,6 +9,15 @@ use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
+    public function profile(Request $request)
+    {
+        $user = $request->user();
+
+        return response()->json([
+            'name' => $user->first_name,
+            'photo' => $user->photo ?? 'default.png', // fallback to default
+        ]);
+    }
     public function show(){
         return response()->json(User::all(),200);
     }

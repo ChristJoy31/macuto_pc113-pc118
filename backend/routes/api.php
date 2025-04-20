@@ -18,14 +18,19 @@ Route::delete('/employees/{id}', [EmployeeController::class, 'destroy']);
 
 Route::post('/login', [UserController::class, 'login']);
 
-
-
 Route::get('/students', [StudentController::class, 'index']);
 Route::get('/students/{id}', [StudentController::class, 'search']);
 Route::post('/students', [StudentController::class, 'store']);
 Route::put('/students/{id}', [StudentController::class, 'update']);
 Route::delete('/students/{id}', [StudentController::class, 'destroy']);
 
+Route::middleware('auth:sanctum')->get('/user-info', function (Request $request) {
+    return response()->json([
+        'name' => $request->user()->first_name,
+        'role' => $request->user()->role
+    ]);
+});
+Route::middleware('auth:sanctum')->get('/user-profile', [UserController::class, 'profile']);
 
 Route::middleware(['auth:sanctum', 'role:1'])->group(function() {
     // Route::get('/users-admin', [UserController::class, 'admin']);

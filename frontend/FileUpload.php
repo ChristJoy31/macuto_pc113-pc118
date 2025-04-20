@@ -53,8 +53,7 @@ include 'templates/nav.php';
   </div>
 </div>
 
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dropify/0.2.2/js/dropify.min.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/dropify/0.2.2/js/dropify.min.js"></script> -->
 
 <!-- Script to initialize Dropify and handle modal -->
 <script>
@@ -107,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
             method: 'POST',
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token")
-                // ❌ Don't set 'Content-Type' manually with FormData
+          
             },
             body: formData
         })
