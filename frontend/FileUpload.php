@@ -25,7 +25,7 @@ include 'templates/nav.php';
 <ul class="list-group" id="fileList">
     <!-- Files will be loaded here dynamically -->
 </ul>
-<button type="button" class="btn btn-danger" id="confirmDelete">Delete</button>
+
 
 
        
@@ -172,3 +172,4 @@ document.addEventListener('DOMContentLoaded', () => {
     loadFiles();
 });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

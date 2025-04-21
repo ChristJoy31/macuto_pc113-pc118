@@ -40,8 +40,8 @@ Route::middleware(['auth:sanctum', 'role:1'])->group(function() {
     Route::put('/users-admin/{id}', [UserController::class, 'update']);
     Route::delete('/users-admin/{id}', [UserController::class, 'destroy']);
     Route::post('upload-document', [DocumentController::class, 'store']);
-Route::get('list-documents', [DocumentController::class, 'index']);
-Route::post('delete-document', [DocumentController::class, 'destroy']);
+    Route::get('list-documents', [DocumentController::class, 'index']);
+    Route::post('delete-document', [DocumentController::class, 'destroy']);
 
   
 
@@ -49,5 +49,10 @@ Route::post('delete-document', [DocumentController::class, 'destroy']);
 });
 
 Route::middleware(['auth:sanctum', 'role:2'])->group(function() {
+    Route::get('/user-dashboard', [UserDashboardController::class, 'index']); 
+});
+
+
+Route::middleware(['auth:sanctum', 'role:3'])->group(function() {
     Route::get('/user-dashboard', [UserDashboardController::class, 'index']); 
 });
