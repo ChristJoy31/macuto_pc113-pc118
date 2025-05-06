@@ -38,7 +38,7 @@
 
     <!-- Secretary Only Links -->
     <div id="secretaryLinks" class="d-none">
-        <a href="document-requests.php">
+        <a href="documentRequest.php">
             <i class="bi bi-file-earmark-text"></i> Document Requests
         </a>
 
@@ -49,7 +49,7 @@
 
     <!-- Resident Only Links -->
     <div id="residentLinks" class="d-none">
-        <a href="request-document.php">
+        <a href="requestDocument.php">
             <i class="bi bi-journal-plus"></i> Request Document
         </a>
 

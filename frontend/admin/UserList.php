@@ -1,30 +1,31 @@
 <?php
-require 'templates/header.php';
-require 'templates/sidebar.php';
-include 'templates/nav.php';
+require '../templates/header.php';
+require '../templates/sidebar.php';
+include '../templates/nav.php';
 ?>
 
 <!-- Main Content -->
 <div class="table-content p-4">    
     <div class="container-fluid mt-4">
         <!-- Title and Add Employee Button -->
-        <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="d-flex justify-content-start align-items-right mb-3">
             <button class="btn btn-primary shadow" id="addUserBtn">
                 <i class="bi bi-person-plus"></i> Add User
             </button>
         </div>
         <!-- User DataTable -->
         <div class="table-responsive">
-            <table class="table table-hover table-bordered text-center shadow-sm" id="userTable">
-                <thead class="table-primary text-light">
+            <table class="table table-hover text-center shadow-sm" id="userTable">
+                <thead class="table-primary text-dark">
                     <tr>
                         <th>ID</th>
+                        <th>Action</th>
                         <th>Photo</th>
                         <th>Firstname</th>
                         <th>Lastname</th>
                         <th>Email</th>
                         <th>Role</th>
-                        <th>Action</th>
+                        
                     </tr>
                 </thead>
                 <tbody id="userTableBody">
@@ -169,35 +170,56 @@ document.addEventListener("DOMContentLoaded", function() {
    
 
     // Initialize DataTable
-     table = $('#userTable').DataTable({
-        columns: [
-            { data: 'id' },
-            { data: 'photo',
+    table = $('#userTable').DataTable({
+    columnDefs: [
+        { targets: 0, visible: false }  // Hide the ID column
+    ],
+    columns: [
+        { data: 'id' },  // Hidden ID column
+        {
+            data: 'id',
+            render: function(data, type, row) {
+                return `
+                        <div class="d-flex align-items-center justify-content-start">
+                            <a href="#" class="text-decoration-none d-flex align-items-center me-2 text-success" onclick="viewUser(${row.id})">
+                            <i class="bi bi-eye me-1"></i> View
+                            </a>
+                            <span class="mx-1">|</span>
+                         <a href="#" class="text-decoration-none d-flex align-items-center me-2 text-primary" onclick="editUser(${row.id})">
+                            <i class="bi bi-pencil-square me-1"></i> Edit
+                        </a>
+                        <span class="mx-1">|</span>
+                        <a href="#" class="text-decoration-none d-flex align-items-center text-danger" onclick="deleteUser(${row.id})">
+                            <i class="bi bi-trash me-1"></i> Delete
+                        </a>
+                        </div>
+                `;
+            }
+        },  
+        { 
+            data: 'photo',
             render: function(data) {
                 if (!data) return 'No Photo';
                 return `<img src="http://backend.test/storage/${data}" alt="Employee Photo" width="50" height="50" class="rounded-circle"/>`;
-            }}, 
-            { data: 'first_name' }, 
-            { data: 'last_name' }, 
-            { data: 'email' }, 
-            { data: 'role' }, 
-            {
-                data: 'id',
-                render: function(data, type, row) {
-                    return `
-                        <div class="data-table">
-                            <button class="btn btn-sm btn-warning" onclick="editUser(${row.id})">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
-                            </button>
-                            <button class="btn btn-sm btn-danger" onclick="deleteUser(${row.id})">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
-                            </button>
-                        </div>
-                    `;
-                }
             }
-        ]
-    });
+        },
+        { data: 'first_name' },
+        { data: 'last_name' },
+        { data: 'email' },
+        { 
+            data: 'role', 
+            render: function(data) {
+                if (data == 1) return `<span class="badge bg-primary">Admin</span>`;
+                if (data == 2) return `<span class="badge bg-warning text-dark">Secretary</span>`;
+                if (data == 3) return `<span class="badge bg-success">Resident</span>`;
+                return `<span class="badge bg-secondary">Unknown</span>`;  // In case of unexpected values
+            }
+        },
+        
+    ]
+});
+
+
 
     // Fetch user data
     function fetchUsers() {
@@ -432,5 +454,5 @@ function deleteUser(id) {
 
 
 <?php
-require 'templates/footer.php'
+require '../templates/footer.php'
 ?>
