@@ -102,6 +102,26 @@
         .custom-margin {
         margin-left: 50px; 
         }
+        .card-header {
+        font-size: 1.2rem;
+        font-weight: 600;
+       }
+        .card-body strong {
+            font-weight: 500;
+        }
+        .profile-line {
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 2px;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+        .label {
+            font-weight: 500;
+            color: #555;
+        }
+        .value {
+            font-weight: 400;
+        }
     </style>
 </head>
 <body>

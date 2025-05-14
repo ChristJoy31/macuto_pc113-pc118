@@ -9,15 +9,25 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable,HasApiTokens;
+    use HasFactory, Notifiable, HasApiTokens;
 
     protected $fillable = [
         'first_name',
         'last_name',
+        'middle_name',
+        'suffix',
         'email',
         'password',
+        'photo',
+        'contact_number',
+        'address',
+        'gender',
+        'birthdate',
+        'civil_status',
+        'citizenship',
+        'religion',
+        'position',
         'role',
-        'photo'
     ];
 
     protected $hidden = [
@@ -27,6 +37,7 @@ class User extends Authenticatable
 
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'birthdate' => 'date',
         'password' => 'hashed',
     ];
 }

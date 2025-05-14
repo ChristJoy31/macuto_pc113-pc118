@@ -1,41 +1,68 @@
 <?php
-require 'templates/header.php';
-require 'templates/sidebar.php';
-include 'templates/nav.php';
+require '../templates/header.php';
+require '../templates/sidebar.php';
+include '../templates/nav.php';
 ?>
 <div class="table-content p-4">    
 <div class="container-fluid mt-4">
 
-<div class="container mt-4">
-  <div class="card shadow p-4">
-    <div class="row">
-      <div class="col-md-3 text-center">
-        <img id="profilePhoto" src="" class="rounded-circle mb-3" width="150" height="150" alt="User Photo">
+
+
+
+<div class="row" id="profile-content">
+  <!-- Left Panel -->
+  <div class="col-md-8">
+    <div class="card shadow-sm">
+      <div class="card-header bg-primary text-white">
+        Profile
       </div>
-      <div class="col-md-9">
-        <h4 class="mb-3">Personal Information</h4>
-        <div class="row mb-2">
-          <div class="col-sm-3 fw-bold">Firstname:</div>
-          <div class="col-sm-9" id="firstName"></div>
+      <div class="card-body">
+        <p class="fw-semibold">Personal Information</p>
+
+        <div class="row">
+          <div class="col-md-6 profile-line"><span class="label">First Name:</span> <span class="value" id="first_name"></span></div>
+          <div class="col-md-6 profile-line"><span class="label">Last Name:</span> <span class="value" id="last_name"></span></div>
+          <div class="col-md-6 profile-line"><span class="label">Middle Name:</span> <span class="value" id="middle_name"></span></div>
+          <div class="col-md-6 profile-line"><span class="label">Suffix:</span> <span class="value" id="suffix"></span></div>
+          <div class="col-md-6 profile-line"><span class="label">Email:</span> <span class="value" id="email"></span></div>
+          <div class="col-md-6 profile-line"><span class="label">Contact Number:</span> <span class="value" id="contact_number"></span></div>
+          <div class="col-md-6 profile-line"><span class="label">Gender:</span> <span class="value" id="gender"></span></div>
+          <div class="col-md-6 profile-line"><span class="label">Birthdate:</span> <span class="value" id="birthdate"></span></div>
+          <div class="col-md-6 profile-line"><span class="label">Civil Status:</span> <span class="value" id="civil_status"></span></div>
+          <div class="col-md-6 profile-line"><span class="label">Citizenship:</span> <span class="value" id="citizenship"></span></div>
+          <div class="col-md-6 profile-line"><span class="label">Religion:</span> <span class="value" id="religion"></span></div>
+          <div class="col-md-6 profile-line"><span class="label">Position:</span> <span class="value" id="position"></span></div>
+          <div class="col-md-12 profile-line"><span class="label">Address:</span> <span class="value" id="address"></span></div>
+          <div class="col-md-12 profile-line"><span class="label">Role:</span> <span class="value" id="role"></span></div>
         </div>
-        <div class="row mb-2">
-          <div class="col-sm-3 fw-bold">Lastname:</div>
-          <div class="col-sm-9" id="lastName"></div>
+
+        <div class="mt-3">
+          <a href="#" id="editProfileBtn" class="btn btn-primary btn-sm me-2">Edit Profile</a>
+          <a href="{{ route('profile.change-password') }}" class="btn btn-secondary btn-sm">Change Password</a>
         </div>
-        <div class="row mb-2">
-          <div class="col-sm-3 fw-bold">Email:</div>
-          <div class="col-sm-9" id="email"></div>
-        </div>
-        <div class="row mb-2">
-          <div class="col-sm-3 fw-bold">Role:</div>
-          <div class="col-sm-9" id="Role"></div>
-        </div>
-        <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#editUserModal">Edit Information</button>
+      </div>
+    </div>
+  </div>
+
+
+<!-- Right Panel: Photo + QR -->
+<div class="col-md-4">
+  <div class="card text-center shadow-sm">
+    <div class="card-body">
+      <img id="profilePhoto" class="rounded-circle mb-3" width="100" height="100" alt="Profile Photo">
+      <img id="qrCode" class="img-fluid mb-2" width="180" alt="QR Code">
+      <div class="text-muted">
+        <small id="positionLabel"></small><br>
+        <small id="roleLabel"></small>
       </div>
     </div>
   </div>
 </div>
-</div>
+
+
+
+
+
 </div>
 
 <!-- Edit Employee Modal -->
@@ -81,41 +108,50 @@ include 'templates/nav.php';
 
 
 <script>
-    console.log("User ID:", localStorage.getItem("user_id"));
-    console.log("Token:", localStorage.getItem("token"));
-document.addEventListener("DOMContentLoaded", function () {
-    const userId = localStorage.getItem("user_id");
-    if (userId) {
-        fetch(`http://backend.test/api/users-admin/search?find=${userId}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + localStorage.getItem("token"),
-            },
-        })
-        .then(response => response.json())
-        .then(data => {
-            const user = Array.isArray(data) ? data[0] : data;
+   function loadUserProfile() {
+    fetch("http://backend.test/api/user-profile", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + localStorage.getItem("token"), // Make sure token is correct
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Basic fields
+        document.getElementById("first_name").textContent = data.name.split(" ")[0];
+        document.getElementById("last_name").textContent = data.name.split(" ")[1];
+        document.getElementById("email").textContent = data.email;
+        document.getElementById("role").textContent = data.role;
+        document.getElementById("profilePhoto").src = `http://backend.test/storage/${data.photo}`;
 
-            document.getElementById("firstName").textContent = user.first_name || '';
-            document.getElementById("lastName").textContent = user.last_name || '';
-            document.getElementById("email").textContent = user.email || '';
-            document.getElementById("Role").textContent = user.role || '';
-            document.getElementById("profilePhoto").src = user.photo 
-                ? `http://backend.test/storage/${data}` 
-                : "https://via.placeholder.com/150";
+        // Conditional fields
+        if (data.role === "resident") {
+            document.getElementById("contact_number").textContent = data.contact_number;
+            document.getElementById("address").textContent = data.address;
+            document.getElementById("gender").textContent = data.gender;
+            document.getElementById("birthdate").textContent = data.birthdate;
+            document.getElementById("civil_status").textContent = data.civil_status;
+            document.getElementById("citizenship").textContent = data.citizenship;
+            document.getElementById("religion").textContent = data.religion;
+        } else if (data.role === "admin" || data.role === "secretary") {
+            document.getElementById("position").textContent = data.position;
+            document.getElementById("contact_number").textContent = data.contact_number;
+        }
 
-            document.getElementById("editUserId").value = user.id;
-            document.getElementById("editFirstName").value = user.first_name || '';
-            document.getElementById("editLastName").value = user.last_name || '';
-            document.getElementById("editEmail").value = user.email || '';
-            document.getElementById("editRole").value = user.role || '';
-        })
-        .catch(error => {
-            console.error("Failed to fetch user:", error);
-        });
-    }
-});
+        // Optional text labels
+        document.getElementById("positionLabel").textContent = data.position ?? '';
+        document.getElementById("roleLabel").textContent = data.role;
+
+    })
+    .catch(error => {
+        console.error("Error fetching profile:", error);
+    });
+}
+
+// Call this function when the page loads
+loadUserProfile();
+
 
 // Edit Employee Function (optional - not used directly in this version)
 function editUser(id) {
@@ -206,3 +242,6 @@ document.getElementById("saveChangesBtn").addEventListener("click", function() {
     });
 });
 </script>
+<?php
+require '../templates/footer.php'
+?>

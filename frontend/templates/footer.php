@@ -11,7 +11,7 @@
       <div class="modal-body">Are you sure you want to log out?</div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button id="confirmLogout" type="button" class="btn btn-danger">Logout</button>
+        <button id="confirmLogout" type="button" class="btn btn-primary">Logout</button>
       </div>
     </div>
   </div>
@@ -19,9 +19,11 @@
 
 <!-- Logout Script -->
 <script>
-document.getElementById("confirmLogout").addEventListener("click", function () {
+document.getElementById("confirmLogout").addEventListener("click", function () { {
     localStorage.removeItem("token");
-    window.location.href = "login.php";
+    localStorage.removeItem("role");
+    window.location.href = "http://frontend.test/login.php";
+  }
 });
 </script>
 

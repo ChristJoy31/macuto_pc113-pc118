@@ -4,4 +4,9 @@ require __DIR__ . '/../templates/sidebar.php';
 include __DIR__ . '/../templates/nav.php';
 ?>
 
-lay
+
+
+
+<?php
+include __DIR__ . '/../templates/footer.php';
+?>

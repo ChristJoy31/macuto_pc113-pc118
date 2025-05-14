@@ -61,8 +61,6 @@ Route::middleware(['auth:sanctum', 'role:2'])->group(function() {
 
 
 
-
-
 Route::middleware(['auth:sanctum', 'role:3'])->group(function() {
     Route::get('/user-dashboard', [UserDashboardController::class, 'index']);
     Route::post('/certificate-request', [CertificateController::class, 'store']);

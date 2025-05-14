@@ -12,7 +12,7 @@ include '../templates/header.php'
             Loading...
         </a>
         <ul class="dropdown-menu nav-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item text-light bg-danger" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal" id="logoutLink">
+            <a class="dropdown-item text-light bg-danger" href="" data-bs-toggle="modal" data-bs-target="#logoutModal" id="logoutLink">
                 <i class="bi bi-box-arrow-right me-2"></i> Logout
             </a>
         </ul>
@@ -41,20 +41,16 @@ include '../templates/header.php'
         Hi, ${data.name}
       </a>
       <ul class="dropdown-menu nav-menu dropdown-menu-end">
-        <a class="dropdown-item text-light bg-danger" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal" id="logoutLink">
+        <a class="dropdown-item text-light bg-primary"  data-bs-toggle="modal" data-bs-target="#logoutModal" id="logoutLink">
           <i class="bi bi-box-arrow-right me-2"></i> Logout
         </a>
-      </ul>
+      </ul> 
     `;
   })
   .catch(error => {
     console.error("Failed to load user info:", error);
   });
 
-  function logout() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    window.location.href = "http://frontend.test/login.php";
-  }
+
 </script>
 

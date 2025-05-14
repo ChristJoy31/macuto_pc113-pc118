@@ -10,14 +10,39 @@ use Illuminate\Support\Facades\Log;
 class UserController extends Controller
 {
     public function profile(Request $request)
-    {
-        $user = $request->user();
+{
+    $user = $request->user(); // Authenticated user
 
-        return response()->json([
-            'name' => $user->first_name,
-            'photo' => $user->photo ?? 'default.png', // fallback to default
-        ]);
+    // Common data
+    $data = [
+        'id' => $user->id,
+        'name' => $user->first_name . ' ' . $user->last_name,
+        'email' => $user->email,
+        'photo' => $user->photo ?? 'default.png',
+        'role' => $user->role,
+    ];
+
+    // Role-based data
+    if ($user->role === 'resident') {
+        $data += [
+            'contact_number' => $user->contact_number,
+            'address' => $user->address,
+            'gender' => $user->gender,
+            'birthdate' => $user->birthdate,
+            'civil_status' => $user->civil_status,
+            'citizenship' => $user->citizenship,
+            'religion' => $user->religion,
+        ];
+    } elseif (in_array($user->role, ['admin', 'secretary'])) {
+        $data += [
+            'position' => $user->position,
+            'contact_number' => $user->contact_number,
+        ];
     }
+
+    return response()->json($data, 200);
+}
+
     public function show(){
         return response()->json(User::all(),200);
     }

@@ -48,7 +48,7 @@ public function myRequests(Request $request)
 
     return Certificate::where('resident_id', $user->id)
     ->orderBy('created_at', 'desc')
-    ->select('id', 'document_type', 'purpose', 'status', 'reason', 'created_at', 'claimed_at')
+    ->select('id', 'document_type', 'purpose', 'status', 'reason', 'created_at', 'claimed_at', 'is_claimed')
     ->get();
 }
 
@@ -59,7 +59,7 @@ public function updateStatus(Request $request, $id)
         'status' => 'required|in:Approved,Rejected',
         'reason' => 'nullable|string',
     ]);
-
+    
     $certificate = Certificate::findOrFail($id);
     $certificate->status = $request->status;
 

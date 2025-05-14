@@ -87,3 +87,7 @@ include __DIR__ . '/../templates/nav.php';
         </ul>
     </div>
 </div>
+
+<?php
+include __DIR__ . '/../templates/footer.php';
+?>

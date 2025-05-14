@@ -5,19 +5,7 @@ include __DIR__ . '/../templates/nav.php';
 ?>
 
 
-<!-- secretaryView.php -->
-<table class="table table-hover">
-    <thead>
-        <tr>
-            <th>Resident</th>
-            <th>Document</th>
-            <th>Purpose</th>
-            <th>Status</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody id="requestsBody"></tbody>
-</table>
+<h1>dashboard secretary ni lalay</h1>
 
 <!-- <script>
 fetch('http://backend.test/api/certificate-request')

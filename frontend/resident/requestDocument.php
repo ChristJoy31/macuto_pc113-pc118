@@ -90,7 +90,7 @@ function loadResidentRequests() {
             return;
         }
         data.forEach(row => {
-            console.log('claimed_at for row id ' + row.id + ':', row.claimed_at);
+            // console.log(`ID: ${row.id} | is_claimed: ${row.is_claimed}`);
     let statusBadge = '';
     let notes = '';
     let remarks = '';
@@ -102,13 +102,16 @@ function loadResidentRequests() {
         notes = row.reason ? `<small class="text-danger">Rason: ${row.reason}</small>` : '';
     } else if (row.status === 'Approved') {
         statusBadge = `<span class="badge bg-success">Approved</span>`;
-
-        if (row.is_claimed) {
-            notes = `<span class="text-muted">✅ Naklaim na nimo ang dokumento.</span>`;
+        
+        if (row.is_claimed == 1 || row.is_claimed == "1") {
+            notes = `<span class="text-muted">Document claimed.</span>`;
+            remarks = ''; 
         } else {
-            notes = `<span class="text-success">📌 Palihug kuhaa na ang imong dokumento.</span>`;
+            notes = `<span class="text-success">Please claim your document..</span>`;
             remarks = `<button onclick="markAsClaimed(${row.id})" class="btn btn-outline-primary btn-sm">Mark as Claimed</button>`;
         }
+
+
     }
  
     table.innerHTML += `
@@ -141,14 +144,18 @@ function markAsClaimed(id) {
         }
     })
     .then(res => res.json())
-    .then(() => {
+    .then(res => {
+    if (res.success) {
         Swal.fire('Marked as Claimed!', 'You have successfully claimed your document.', 'success');
-        loadResidentRequests(); // reload table
-    })
-    .catch(err => {
-        console.error('Error marking as claimed:', err);
-        Swal.fire('Error', 'Something went wrong claiming the document.', 'error');
-    });
+        setTimeout(() => {
+            loadResidentRequests(); // reload after delay
+        }, 500); // 0.5 second delay
+    } else {
+        Swal.fire('Error', res.message || 'Update failed.', 'error');
+    }
+});
+
+
 }
 
 
