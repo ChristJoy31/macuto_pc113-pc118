@@ -41,7 +41,7 @@ Route::middleware(['auth:sanctum', 'role:1'])->group(function() {
     Route::get('/users-admin', [UserController::class, 'show']);
     Route::get('/users-admin/{id}', [UserController::class, 'search']);
     Route::post('/users-admin', [UserController::class, 'store']);
-    Route::put('/users-admin/{id}', [UserController::class, 'update']);
+    Route::post('/users-admin/{id}', [UserController::class, 'update']);
     Route::delete('/users-admin/{id}', [UserController::class, 'destroy']);
     Route::post('upload-document', [DocumentController::class, 'store']);
     Route::get('list-documents', [DocumentController::class, 'index']);

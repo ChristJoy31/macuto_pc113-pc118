@@ -9,39 +9,32 @@ use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
-    public function profile(Request $request)
+// In your UserController or AuthController
+public function profile(Request $request)
 {
-    $user = $request->user(); // Authenticated user
+    $user = $request->user();
 
-    // Common data
-    $data = [
+    return response()->json([
         'id' => $user->id,
         'name' => $user->first_name . ' ' . $user->last_name,
+        'first_name' => $user->first_name,
+        'middle_name' => $user->middle_name,
+        'last_name' => $user->last_name,
+        'suffix' => $user->suffix,
         'email' => $user->email,
-        'photo' => $user->photo ?? 'default.png',
+        'contact_number' => $user->contact_number,
+        'address' => $user->address,
+        'gender' => $user->gender,
+        'birthdate' => $user->birthdate,
+        'civil_status' => $user->civil_status,
+        'citizenship' => $user->citizenship,
+        'religion' => $user->religion,
+        'position' => $user->position,
         'role' => $user->role,
-    ];
-
-    // Role-based data
-    if ($user->role === 'resident') {
-        $data += [
-            'contact_number' => $user->contact_number,
-            'address' => $user->address,
-            'gender' => $user->gender,
-            'birthdate' => $user->birthdate,
-            'civil_status' => $user->civil_status,
-            'citizenship' => $user->citizenship,
-            'religion' => $user->religion,
-        ];
-    } elseif (in_array($user->role, ['admin', 'secretary'])) {
-        $data += [
-            'position' => $user->position,
-            'contact_number' => $user->contact_number,
-        ];
-    }
-
-    return response()->json($data, 200);
+        'photo' => $user->photo,
+    ]);
 }
+
 
     public function show(){
         return response()->json(User::all(),200);
@@ -105,7 +98,7 @@ class UserController extends Controller
 /**
  * Update the specified resource in storage.
  */
-    public function update(Request $request, $id)
+   public function update(Request $request, $id)
 {
     $user = User::find($id);
 
@@ -118,16 +111,68 @@ class UserController extends Controller
         'last_name' => 'required|string',
         'email' => 'required|email|unique:users,email,' . $id,
         'role' => 'required|string',
+        'password' => 'nullable|string|min:8',
+        'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
     ]);
 
-    $user->update($request->all());
+    // Basic required fields
+    $user->first_name = $request->first_name;
+    $user->last_name = $request->last_name;
+    $user->email = $request->email;
+    $user->role = $request->role;
+
+
+    // Optional fields (will update even if empty string is sent)
+       if ($request->has('middle_name')) {
+        $user->middle_name = $request->middle_name;
+    }
+    if ($request->has('contact_number')) {
+        $user->contact_number = $request->contact_number;
+    }
+
+    if ($request->has('address')) {
+        $user->address = $request->address;
+    }
+
+    if ($request->has('gender')) {
+        $user->gender = $request->gender;
+    }
+
+    if ($request->has('birthdate')) {
+        $user->birthdate = $request->birthdate;
+    }
+
+    if ($request->has('civil_status')) {
+        $user->civil_status = $request->civil_status;
+    }
+
+    if ($request->has('citizenship')) {
+        $user->citizenship = $request->citizenship;
+    }
+
+    if ($request->has('religion')) {
+        $user->religion = $request->religion;
+    }
+
+    if ($request->has('position')) {
+        $user->position = $request->position;
+    }
+
+    // Handle new image upload
+    if ($request->hasFile('photo')) {
+        $photoPath = $request->file('photo')->store('user_photos', 'public');
+        $user->photo = $photoPath;
+    }
+
+    $user->save();
 
     return response()->json([
         'message' => 'User updated successfully',
-        // 'user' => $user,
         'success' => true,
-    ],200);
+    ], 200);
 }
+
+
 
 /**
  * Remove the specified resource from storage.
