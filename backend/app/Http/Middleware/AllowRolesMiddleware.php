@@ -20,6 +20,12 @@ class AllowRolesMiddleware
         if ($user->role == 1) {
             return $next($request);
         }
+           if ($user->role == 2) {
+            return $next($request);
+        }
+           if ($user->role == 3) {
+            return $next($request);
+        }
         if (!in_array($user->role, $roles)) {
             return response()->json([
                 'message' => 'Dili ka kasud diha! bawal!!!!!!'], 403);

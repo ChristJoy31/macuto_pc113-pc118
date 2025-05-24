@@ -6,6 +6,14 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Laravel\Sanctum\PersonalAccessToken;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\SendUserSetPasswordMail;
+
+
+
+
 
 class UserController extends Controller
 {
@@ -25,7 +33,7 @@ public function profile(Request $request)
         'contact_number' => $user->contact_number,
         'address' => $user->address,
         'gender' => $user->gender,
-        'birthdate' => $user->birthdate,
+        'birthdate' => $user->birthdate?->format('Y-m-d'),
         'civil_status' => $user->civil_status,
         'citizenship' => $user->citizenship,
         'religion' => $user->religion,
@@ -40,38 +48,57 @@ public function profile(Request $request)
         return response()->json(User::all(),200);
     }
 
-    public function store(Request $request)
+public function store(Request $request) 
 {
     $request->validate([
         'first_name' => 'required|string',
         'last_name' => 'required|string',
         'email' => 'required|email|unique:users,email',
-        'password' => 'required|string|min:8', 
         'role' => 'required|string',
         'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
     ]);
 
-    if ($request->hasFile('photo')) {
-        $photoPath = $request->file('photo')->store('user_photos', 'public');
-    } else {
-        $photoPath = null;
+    try {
+        $photoPath = $request->hasFile('photo') 
+            ? $request->file('photo')->store('user_photos', 'public') 
+            : null;
+
+        $user = User::create([
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'email' => $request->email,
+            'password' => null, // Set later by user
+            'role' => $request->role,
+            'photo' => $photoPath,
+        ]);
+
+        // Generate temporary token for password setup
+        $token = $user->createToken('password-setup-token', ['set-password'])->plainTextToken;
+
+        // Frontend URL for password setup page
+        $frontendUrl = env('FRONTEND_URL', 'http://frontend.test');
+        $setPasswordUrl = "{$frontendUrl}/setPassword.php?token={$token}&email={$user->email}";
+
+        // Send email using your existing Mailable class
+        Mail::to($user->email)->send(new SendUserSetPasswordMail($user, $setPasswordUrl));
+
+        return response()->json([
+            'message' => 'User created successfully. Email sent.',
+            'success' => true,
+        ], 200);
+
+    } catch (\Exception $e) {
+        \Log::error('User creation or email failed: ' . $e->getMessage());
+
+        return response()->json([
+            'message' => 'User creation or email sending failed.',
+            'success' => false,
+            'error' => $e->getMessage(),
+        ], 500);
     }
-    
-
-    $user = User::create([
-        'first_name' => $request->first_name,
-        'last_name' => $request->last_name,
-        'email' => $request->email,
-        'password' => bcrypt($request->password),
-        'role' => $request->role,
-        'photo' => $photoPath,
-    ]);
-
-    return response()->json([
-        'message' => 'User Created successfully',
-        'success' => true,
-    ], 200);
 }
+
+
 
     public function search(Request $request)
 {
@@ -189,6 +216,73 @@ public function profile(Request $request)
         'success' => true,
     ], 200);
 }
+
+public function setPassword(Request $request)
+{
+    $request->validate([
+        'email' => 'required|email',
+        'token' => 'required',
+        'password' => 'required|min:8|confirmed',
+    ]);
+
+    // Find the token record from Sanctum's personal_access_tokens table
+    $accessToken = PersonalAccessToken::findToken($request->token);
+
+    if (!$accessToken) {
+        return response()->json(['message' => 'Invalid or expired token'], 400);
+    }
+
+    // Get the user from the token
+    $user = $accessToken->tokenable;
+
+    // Double check the email matches
+    if ($user->email !== $request->email) {
+        return response()->json(['message' => 'Email does not match token'], 400);
+    }
+
+    // Set the new password
+    $user->password = Hash::make($request->password);
+    $user->save();
+
+    // Delete the token after password is set (optional for security)
+    $accessToken->delete();
+
+    return response()->json(['message' => 'Password set successfully']);
+}
+
+
+    public function getUserInfo(Request $request)
+{
+    $token = $request->bearerToken(); // plain token gikan sa frontend
+
+    if (!$token) {
+        return response()->json(['message' => 'Token missing'], 400);
+    }
+
+    // Use Laravel's built-in method to validate token
+    $personalToken = PersonalAccessToken::findToken($token);
+
+    if (!$personalToken) {
+        return response()->json(['message' => 'Invalid token'], 401);
+    }
+
+    // Get the user from token
+    $user = $personalToken->tokenable;
+
+    if (!$user) {
+        return response()->json(['message' => 'User not found'], 404);
+    }
+
+    return response()->json([
+        'first_name' => $user->first_name,
+        'last_name' => $user->last_name,
+        'email' => $user->email,
+        'photo' => $user->photo,
+    ]);
+}
+
+
+
 
 
     public function admin()

@@ -2,8 +2,6 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\EmployeeController;
-use App\Http\Controllers\StudentController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\UserDashboardController;
@@ -13,19 +11,15 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CertificateController;
 
-// Route::get('/employees', [EmployeeController::class, 'index']);
-// Route::get('/employees/search', [EmployeeController::class, 'search']);
-// Route::post('/employees', [EmployeeController::class, 'store']);
-// Route::put('/employees/{id}', [EmployeeController::class, 'update']);
-// Route::delete('/employees/{id}', [EmployeeController::class, 'destroy']);
-
-// Route::get('/students', [StudentController::class, 'index']);
-// Route::get('/students/{id}', [StudentController::class, 'search']);
-// Route::post('/students', [StudentController::class, 'store']);
-// Route::put('/students/{id}', [StudentController::class, 'update']);
-// Route::delete('/students/{id}', [StudentController::class, 'destroy']);
 
 Route::post('/login', [AuthController::class, 'login']);
+ Route::post('/set-password', [UserController::class, 'setPassword']);
+ Route::post('/forgot-password', [AuthController::class, 'sendResetLink']);
+Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+
+
+
+Route::get('/user-infos', [UserController::class, 'getUserInfo']);
 
 
 Route::middleware('auth:sanctum')->get('/user-info', function (Request $request) {
@@ -46,6 +40,8 @@ Route::middleware(['auth:sanctum', 'role:1'])->group(function() {
     Route::post('upload-document', [DocumentController::class, 'store']);
     Route::get('list-documents', [DocumentController::class, 'index']);
     Route::post('delete-document', [DocumentController::class, 'destroy']);
+   
+
     
 
 });
@@ -71,18 +67,6 @@ Route::middleware(['auth:sanctum', 'role:3'])->group(function() {
 });
 
 
-// routes/api.php
-Route::get('/permissions', function () {
-    return response()->json([
-        'crud' => ['Create', 'Read', 'Update', 'Delete'],
-        'features' => [
-            'User Management',
-            'Scholarship Assistance',
-            'Complaint Handling',
-            'Document Issuance',
-            'Resident Management'
-        ]
-    ]);
-});
+
 
 
