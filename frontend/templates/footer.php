@@ -22,7 +22,7 @@
 document.getElementById("confirmLogout").addEventListener("click", function () { {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
-    window.location.href = "http://frontend.test/login.php";
+    window.location.href = "https://christjoy.site/login.php";
   }
 });
 </script>

@@ -59,16 +59,16 @@ include '../templates/nav.php';
                         <input type="email" class="form-control" id="addEmail" required>
                     </div>
                     <div class="mb-3">
-                        <label for="addPassword" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="addPassword" required>
+                        <select class="form-select" id="addRole" required>
+                            <option value="1">Admin</option>
+                            <option value="2">Secretary</option>
+                            <option value="3">Resident</option>
+                        </select>
                     </div>
                     <div class="mb-3">
-                        <label for="addRole" class="form-label">Role</label>
-                        <input type="text" class="form-control" id="addRole" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="addPhoto" class="form-label">Photo</label>
-                        <input type="file" class="form-control" id="addPhoto" accept="image/*">
+                        <input type="file" id="addPhoto" name="photo" class="dropify"
+                            data-allowed-file-extensions="jpg jpeg png"
+                            data-max-file-size="10M" />
                     </div>
                 </form>
             </div>
@@ -103,8 +103,17 @@ include '../templates/nav.php';
                         <input type="email" class="form-control" id="editEmail" required>
                     </div>
                     <div class="mb-3">
-                        <label for="editRole" class="form-label">Role</label>
-                        <input type="text" class="form-control" id="editRole" required>
+                        <select class="form-select" id="editRole" required>
+                            <option value="1">Admin</option>
+                            <option value="2">Secretary</option>
+                            <option value="3">Resident</option>
+                        </select>
+                    </div>
+                     <div class="mb-3">
+                        <input type="file" id="editPhoto" name="photo" class="dropify"
+                            data-default-file="path/to/existing/photo.jpg"
+                            data-allowed-file-extensions="jpg jpeg png"
+                            data-max-file-size="10M" />
                     </div>
                     <input type="hidden" id="editUserId">
                 </form>
@@ -119,6 +128,7 @@ include '../templates/nav.php';
 
 
 <script>
+    $('.dropify').dropify();
      const Toast = Swal.mixin({
         toast: true,
         position: 'top-end',
@@ -130,7 +140,7 @@ include '../templates/nav.php';
     // Fetch user data function
 function fetchUsers() {
     const token = localStorage.getItem("token"); // Token is needed for the request
-    fetch("http://backend.test/api/users-admin", {
+    fetch("https://bmsbackend.christjoy.site/api/users-admin", {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -200,7 +210,7 @@ document.addEventListener("DOMContentLoaded", function() {
             data: 'photo',
             render: function(data) {
                 if (!data) return 'No Photo';
-                return `<img src="http://backend.test/storage/${data}" alt="Employee Photo" width="50" height="50" class="rounded-circle"/>`;
+                return `<img src="https://bmsbackend.christjoy.site/storage/${data}" alt="Employee Photo" width="50" height="50" class="rounded-circle"/>`;
             }
         },
         { data: 'first_name' },
@@ -219,25 +229,6 @@ document.addEventListener("DOMContentLoaded", function() {
     ]
 });
 
-
-
-    // Fetch user data
-    function fetchUsers() {
-        fetch("http://backend.test/api/users-admin", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + token,
-            },
-        })
-        .then(response => response.json())
-        .then(data => {
-            table.clear();
-            table.rows.add(data).draw();
-        })
-        .catch(error => console.error("Error fetching users:", error));
-    }
-
     fetchUsers();
 
     // Open Add User Modal
@@ -252,11 +243,10 @@ document.addEventListener("DOMContentLoaded", function() {
     formData.append("first_name", document.getElementById("addFirstName").value);
     formData.append("last_name", document.getElementById("addLastName").value);
     formData.append("email", document.getElementById("addEmail").value);
-    formData.append("password", document.getElementById("addPassword").value);
     formData.append("role", document.getElementById("addRole").value);
     formData.append("photo", document.getElementById("addPhoto").files[0]);
 
-    fetch("http://backend.test/api/users-admin", {
+    fetch("https://bmsbackend.christjoy.site/api/users-admin", {
         method: "POST",
         headers: {
             "Authorization": "Bearer " + localStorage.getItem("token"),
@@ -270,7 +260,7 @@ document.addEventListener("DOMContentLoaded", function() {
             // SweetAlert success notification
             Toast.fire({
                 icon: 'success',
-                title: 'User added successfully!'
+                title: 'User added successfully. Email Sent!'
             });
 
             // Close the modal
@@ -281,7 +271,6 @@ document.addEventListener("DOMContentLoaded", function() {
             document.getElementById("addFirstName").value = "";
             document.getElementById("addLastName").value = "";
             document.getElementById("addEmail").value = "";
-            document.getElementById("addPassword").value = "";
             document.getElementById("addRole").value = "";
 
             // Refresh the table data
@@ -291,7 +280,7 @@ document.addEventListener("DOMContentLoaded", function() {
             // Handle errors if the creation fails
             Toast.fire({
                 icon: 'error',
-                title: data.message || 'Failed to add user'
+                title: data.message || 'Failed to add user and email not sent'
             });
             console.error("Validation error:", data);
         }
@@ -312,7 +301,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 // Edit Employee Function
 function editUser(id) {
-    fetch(`http://backend.test/api/users-admin/search?find=${id}`, {
+    fetch(`https://bmsbackend.christjoy.site/api/users-admin/search?find=${id}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -335,6 +324,7 @@ function editUser(id) {
         document.getElementById("editRole").value = user.role || '';
         document.getElementById("editUserId").value = user.id || '';
 
+
         const editModal = new bootstrap.Modal(document.getElementById('editUserModal'));
         editModal.show();
     })  
@@ -354,7 +344,7 @@ document.getElementById("saveChangesBtn").addEventListener("click", function() {
         role: document.getElementById("editRole").value,
     };
 
-    fetch(`http://backend.test/api/users-admin/${userId}`, {
+    fetch(`https://bmsbackend.christjoy.site/api/users-admin/${userId}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
@@ -417,7 +407,7 @@ function deleteUser(id) {
     confirmButtonText: 'Yes, delete it!'
 }).then((result) => {
     if (result.isConfirmed) {
-        fetch(`http://backend.test/api/users-admin/${id}`, {
+        fetch(`https://bmsbackend.christjoy.site/api/users-admin/${id}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",

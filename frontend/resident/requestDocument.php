@@ -49,7 +49,7 @@ document.getElementById('requestForm').addEventListener('submit', function(e) {
     e.preventDefault();
     const form = new FormData(this);
 
-    fetch("http://backend.test/api/certificate-request", {
+    fetch("https://bmsbackend.christjoy.site/api/certificate-request", {
         method: "POST",
         headers: {
             "Authorization": "Bearer " + localStorage.getItem("token"),
@@ -73,7 +73,7 @@ document.getElementById('requestForm').addEventListener('submit', function(e) {
     });
 });
 function loadResidentRequests() {
-    fetch("http://backend.test/api/my-certificate-requests", {
+    fetch("https://bmsbackend.christjoy.site/api/my-certificate-requests", {
         method: "GET",
         headers: {
             "Authorization": "Bearer " + localStorage.getItem("token"),
@@ -136,7 +136,7 @@ function loadResidentRequests() {
 }
 
 function markAsClaimed(id) {
-    fetch(`http://backend.test/api/certificate-request/${id}/claim`, {
+    fetch(`https://bmsbackend.christjoy.site/api/certificate-request/${id}/claim`, {
         method: "PUT",
         headers: {
             "Authorization": "Bearer " + localStorage.getItem("token"),

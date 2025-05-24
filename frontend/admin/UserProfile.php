@@ -191,14 +191,13 @@
                                 </select>
                             </div>
                             <div class="col-md-6 mb-3">
-                                        <form id="uploadForm" action="#" method="POST" enctype="multipart/form-data" onsubmit="return false;">
+                                    
                         <div class="mb-3">
-                            <label for="document" class="form-label">Upload Profile Picture</label>
-                            <input type="file" id="document" name="document" class="dropify"
-                              data-allowed-file-extensions="pdf doc docx"
+                            <label for="editPhoto" class="form-label">Upload Profile Picture</label>
+                            <input type="file" id="editPhoto" name="photo" class="dropify"
+                              data-allowed-file-extensions="jpg jpeg png"
                              data-max-file-size="10M" />
                               </div>
-                             </form>
                             </div>
                         </div>
                         <input type="hidden" id="editUserId" name="user_id">
@@ -218,7 +217,7 @@
             $('.dropify').dropify();
         // Load user profile data and populate the page
         function loadUserProfile() {
-        fetch("http://backend.test/api/user-profile", {
+        fetch("https://bmsbackend.christjoy.site/api/user-profile", {
             method: "GET",
             headers: {
             "Authorization": "Bearer " + localStorage.getItem("token"),
@@ -252,7 +251,7 @@
 
             // Handle photo
             if (data.photo) {
-                document.getElementById("profilePhoto").src = `http://backend.test/storage/${data.photo}`;
+                document.getElementById("profilePhoto").src = `https://bmsbackend.christjoy.site/storage/${data.photo}`;
             } else {
                 document.getElementById("profilePhoto").src = "default-profile.png";
             }
@@ -281,7 +280,7 @@
 
         // Open edit modal and pre-fill the form with current profile data
         function editUserProfile() {
-    fetch("http://backend.test/api/user-profile", {
+    fetch("https://bmsbackend.christjoy.site/api/user-profile", {
         method: "GET",
         headers: {
             "Authorization": "Bearer " + localStorage.getItem("token"),
@@ -340,7 +339,7 @@ document.getElementById("saveChangesBtn").addEventListener("click", function () 
         console.log(`${key}:`, value);
     }
 
-    fetch(`http://backend.test/api/users-admin/${userId}`, {
+    fetch(`https://bmsbackend.christjoy.site/api/users-admin/${userId}`, {
         method: "POST",
         headers: {
             "Authorization": "Bearer " + localStorage.getItem("token")

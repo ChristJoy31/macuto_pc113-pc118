@@ -44,7 +44,7 @@ include __DIR__ . '/../templates/nav.php';
 </div>
 
 <script>
-fetch("http://backend.test/api/certificate-request", {
+fetch("https://bmsbackend.christjoy.site/api/certificate-request", {
     method: "GET",
     headers: {
         "Authorization": "Bearer " + localStorage.getItem("token"),
@@ -101,7 +101,7 @@ fetch("http://backend.test/api/certificate-request", {
 
 
 function updateStatus(id, status, reason = null) {
-    fetch(`http://backend.test/api/certificate-request/${id}/status`, {
+    fetch(`https://bmsbackend.christjoy.site/api/certificate-request/${id}/status`, {
         method: "PUT",
         headers: {
             "Authorization": "Bearer " + localStorage.getItem("token"),
@@ -133,7 +133,7 @@ document.getElementById('rejectForm').addEventListener('submit', function(e) {
     const id = document.getElementById('rejectRequestId').value;
     const reason = document.getElementById('rejectReason').value;
 
-    fetch(`http://backend.test/api/certificate-request/${id}/status`, {
+    fetch(`https://bmsbackend.christjoy.site/api/certificate-request/${id}/status`, {
         method: "PUT",
         headers: {
             "Authorization": "Bearer " + localStorage.getItem("token"),

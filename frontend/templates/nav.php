@@ -21,7 +21,7 @@ include '../templates/header.php'
 
 
 <script>
-  fetch("http://backend.test/api/user-profile", {
+  fetch("https://bmsbackend.christjoy.site/api/user-profile", {
     method: "GET",
     headers: {
       "Authorization": "Bearer " + localStorage.getItem("token")
@@ -32,7 +32,7 @@ include '../templates/header.php'
     const userInfo = document.getElementById("user-info");
 
     const photoUrl = data.photo 
-      ? `http://backend.test/storage/${data.photo}` 
+      ? `https://bmsbackend.christjoy.site/storage/${data.photo}` 
       : '/frontend/assets/img/default.png';
 
     userInfo.innerHTML = `

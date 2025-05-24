@@ -12,21 +12,10 @@
 
     <!-- Admin Only Links -->
     <div id="adminLinks" class="d-none">
-        <div class="dropdown">
-            <button class="dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                <span style="display: flex; align-items: center; gap: 10px;">
-                    <i class="bi bi-people-fill"></i>
-                    User Management
-                </span>
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="userDropdown">
-                <li><a class="dropdown-item" href="UserList.php">Users List</a></li>
-                <li><a class="dropdown-item" href="EmployeeList.php">Employee List</a></li>
-                <li><a class="dropdown-item" href="StudentList.php">Student List</a></li>
-            </ul>
-        </div>
-
+        <a href="UserList.php">
+            <i class="bi bi-people-fill"></i> Users
+        </a>
+        
         <a href="UserProfile.php">
             <i class="bi bi-person-fill"></i> User Profile
         </a>
@@ -61,7 +50,7 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    fetch('http://backend.test/api/user-info', {
+    fetch('https://bmsbackend.christjoy.site/api/user-info', {
         method: 'GET',
         headers: {
             'Authorization': 'Bearer ' + localStorage.getItem('token')

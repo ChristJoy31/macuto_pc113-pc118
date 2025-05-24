@@ -76,6 +76,9 @@
         </div>
       </div>
       <button type="submit" class="btn btn-primary">Login</button>
+      <div class="mb-3">
+        <a href="forgotPassword.php">Forgot Password</a>
+      </div>
     </form>
   </div>
 
@@ -86,7 +89,7 @@
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
 
-      fetch("http://backend.test/api/login", {
+      fetch("https://bmsbackend.christjoy.site/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
